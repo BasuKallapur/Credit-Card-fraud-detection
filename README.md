@@ -10,6 +10,34 @@ The project consists of:
 2. **Model Training** (`fraud_predictor.py`): Trains and saves the best model (Random Forest)
 3. **Prediction Interface** (`predict_fraud.py`): User-friendly interface for fraud prediction
 
+## Model Comparison
+
+The `credit_card_fraud_detection.py` script performs a comprehensive analysis of four different machine learning models:
+
+1. **Logistic Regression**
+   - Configuration: Strong regularization (C=0.01, 0.1), balanced class weights
+   - Evaluation: Accuracy, precision, recall, F1-score, ROC curve, confusion matrix
+
+2. **Decision Tree**
+   - Configuration: Limited max_depth (3-4), high min_samples_split (50-100), high min_samples_leaf (20-50)
+   - Evaluation: Accuracy, precision, recall, F1-score, ROC curve, confusion matrix
+
+3. **SGD Classifier** (Linear SVM)
+   - Configuration: L2 penalty, hinge loss, strong regularization
+   - Evaluation: Accuracy, precision, recall, F1-score, ROC curve, confusion matrix
+
+4. **Random Forest** (Best performing model)
+   - Configuration: Limited tree depth, high minimum samples for splits/leaves, balanced class weights
+   - Evaluation: Accuracy, precision, recall, F1-score, ROC curve, confusion matrix
+   - Feature importance analysis to identify key predictors
+
+The script generates various visualization files including:
+- Confusion matrices for each model
+- ROC curves showing model performance
+- Feature importance chart (for Random Forest)
+- Precision-recall curves
+- Model comparison summary
+
 ## Key Findings: Data Leakage Issue
 
 During our analysis, we discovered an important issue that's common in machine learning:
