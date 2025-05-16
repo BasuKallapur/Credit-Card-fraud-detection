@@ -170,6 +170,50 @@ def main():
             The prediction is based on a Random Forest model trained on historical transaction data.
             """)
         
+        # Add quick data paste option
+        st.subheader("Quick Data Entry")
+        st.write("Paste a row of transaction data to automatically fill the fields below:")
+        
+        paste_data = st.text_area(
+            "Paste data row here (space or tab separated values)",
+            help="Format: distance_from_home distance_from_last_transaction ratio_to_median_purchase_price repeat_retailer used_chip used_pin_number online_order"
+        )
+        
+        # Initialize default values
+        distance_home = 50.0
+        distance_last = 20.0
+        ratio_median = 1.5
+        repeat_retailer = 1
+        used_chip = 1
+        used_pin = 0
+        online_order = 0
+        
+        # Process pasted data if available
+        if paste_data:
+            try:
+                # Split by any whitespace (space, tab)
+                values = paste_data.strip().split()
+                
+                # Convert values to appropriate types
+                if len(values) >= 7:
+                    distance_home = float(values[0])
+                    distance_last = float(values[1])
+                    ratio_median = float(values[2])
+                    # Cap ratio_median to max allowed value to avoid StreamlitValueAboveMaxError
+                    if ratio_median > 10.0:
+                        st.warning(f"⚠️ Ratio to median purchase price value ({ratio_median}) exceeds maximum (10.0). Value will be capped at 10.0.")
+                        ratio_median = 10.0
+                    repeat_retailer = int(float(values[3]))
+                    used_chip = int(float(values[4]))
+                    used_pin = int(float(values[5]))
+                    online_order = int(float(values[6]))
+                    
+                    st.success("✅ Data parsed successfully! Fields below have been updated.")
+                else:
+                    st.warning("⚠️ Not enough values provided. Please ensure you paste all 7 values.")
+            except Exception as e:
+                st.error(f"❌ Error parsing data: {str(e)}. Please check the format and try again.")
+        
         # Create two columns for inputs
         col1, col2 = st.columns(2)
         
@@ -180,7 +224,7 @@ def main():
                 "Distance from home (miles) 🏠", 
                 min_value=0.0, 
                 max_value=5000.0, 
-                value=50.0,
+                value=distance_home,
                 step=1.0,
                 help="The distance from the customer's home location where the transaction occurred"
             )
@@ -189,16 +233,18 @@ def main():
                 "Distance from last transaction (miles) 📍", 
                 min_value=0.0, 
                 max_value=5000.0, 
-                value=20.0,
+                value=distance_last,
                 step=1.0,
                 help="The distance from the customer's previous transaction location"
             )
             
+            # Ensure ratio_median is within the allowed range for the number_input
+            ratio_median = min(ratio_median, 10.0)
             ratio_median = st.number_input(
                 "Ratio to median purchase price 💰", 
                 min_value=0.01, 
                 max_value=10.0, 
-                value=1.5,
+                value=ratio_median,
                 step=0.01,
                 help="How this transaction compares to the customer's median purchase (1.0 = same as median, 2.0 = twice the median)"
             )
@@ -207,40 +253,44 @@ def main():
             st.subheader("Transaction Characteristics")
             
             repeat_retailer_options = {"Yes": 1, "No": 0}
-            repeat_retailer = st.selectbox(
+            repeat_retailer_display = "Yes" if repeat_retailer == 1 else "No"
+            repeat_retailer_selection = st.selectbox(
                 "Repeat retailer? 🔄",
                 options=list(repeat_retailer_options.keys()),
-                index=0,
+                index=list(repeat_retailer_options.keys()).index(repeat_retailer_display),
                 help="Is this a retailer the customer has purchased from before?"
             )
-            repeat_retailer = repeat_retailer_options[repeat_retailer]
+            repeat_retailer = repeat_retailer_options[repeat_retailer_selection]
             
             used_chip_options = {"Yes": 1, "No": 0}
-            used_chip = st.selectbox(
+            used_chip_display = "Yes" if used_chip == 1 else "No"
+            used_chip_selection = st.selectbox(
                 "Used chip? 💳", 
                 options=list(used_chip_options.keys()),
-                index=0,
+                index=list(used_chip_options.keys()).index(used_chip_display),
                 help="Was the card's chip used for this transaction?"
             )
-            used_chip = used_chip_options[used_chip]
+            used_chip = used_chip_options[used_chip_selection]
             
             used_pin_options = {"Yes": 1, "No": 0}
-            used_pin = st.selectbox(
+            used_pin_display = "Yes" if used_pin == 1 else "No"
+            used_pin_selection = st.selectbox(
                 "Used PIN number? 🔢", 
                 options=list(used_pin_options.keys()),
-                index=0,
+                index=list(used_pin_options.keys()).index(used_pin_display),
                 help="Was a PIN number used for this transaction?"
             )
-            used_pin = used_pin_options[used_pin]
+            used_pin = used_pin_options[used_pin_selection]
             
             online_order_options = {"Yes": 1, "No": 0}
-            online_order = st.selectbox(
+            online_order_display = "Yes" if online_order == 1 else "No"
+            online_order_selection = st.selectbox(
                 "Online order? 🌐", 
                 options=list(online_order_options.keys()),
-                index=1,
+                index=list(online_order_options.keys()).index(online_order_display),
                 help="Was this transaction conducted online?"
             )
-            online_order = online_order_options[online_order]
+            online_order = online_order_options[online_order_selection]
         
         # Add a divider and prediction button
         st.markdown("---")
