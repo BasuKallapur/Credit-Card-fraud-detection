@@ -559,20 +559,33 @@ def main():
     # Model Performance page
     elif page == "Model Performance":
         st.title("Model Performance Analysis")
-        
         st.markdown("""
         This page presents the performance metrics and visualizations for the four machine learning models
         that were evaluated for credit card fraud detection.
         """)
-        
+
+        # Load metrics from CSV
+        try:
+            metrics_df = pd.read_csv("model_metrics.csv")
+        except Exception as e:
+            st.error(f"Could not load model metrics: {e}")
+            return
+
         # Tabs for the different models
         model_tabs = st.tabs([
-            "Random Forest (Best)", 
-            "Logistic Regression", 
-            "Decision Tree", 
+            "Random Forest (Best)",
+            "Logistic Regression",
+            "Decision Tree",
             "SGD Classifier"
         ])
-        
+
+        # Helper to get metrics for a model
+        def get_metrics_for(model_name):
+            row = metrics_df[metrics_df['Model'] == model_name]
+            if row.empty:
+                return None
+            return row.iloc[0]
+
         # Random Forest tab
         with model_tabs[0]:
             st.header("Random Forest Classifier")
@@ -588,192 +601,165 @@ def main():
             - max_features: 'sqrt'
             - class_weight: 'balanced'
             """)
-            
-            # Display images if available
             col1, col2 = st.columns(2)
-            
             with col1:
                 try:
                     st.image("confusion_matrix_Random Forest.png", caption="Confusion Matrix", use_container_width=True)
                 except:
                     st.warning("Confusion matrix image not found.")
-            
             with col2:
                 try:
                     st.image("roc_curve_Random Forest.png", caption="ROC Curve", use_container_width=True)
                 except:
                     st.warning("ROC curve image not found.")
-            
-            # Feature importance
             st.subheader("Feature Importance")
             feature_importance_fig = create_feature_importance_chart()
             if feature_importance_fig:
                 st.plotly_chart(feature_importance_fig, use_container_width=True)
-            
-            # Metrics
             st.subheader("Performance Metrics")
-            metrics_rf = {
-                "Accuracy": 0.9998,
-                "Precision": 0.9997,
-                "Recall": 0.9996,
-                "F1 Score": 0.9996,
-                "AUC": 0.9998
-            }
-            
-            # Create a DataFrame for metrics display
-            metrics_df = pd.DataFrame({
-                "Metric": list(metrics_rf.keys()),
-                "Value": list(metrics_rf.values())
-            })
-            
-            # Display metrics as a bar chart
-            fig = px.bar(
-                metrics_df,
-                x="Metric",
-                y="Value",
-                color="Value",
-                color_continuous_scale="Viridis",
-                title="Key Performance Metrics",
-                labels={"Value": "Score (0-1)"}
-            )
-            fig.update_layout(yaxis_range=[0.9, 1.0])
-            st.plotly_chart(fig, use_container_width=True)
-            
-            # Data leakage explanation
+            rf_metrics = get_metrics_for("Random Forest")
+            if rf_metrics is not None:
+                metrics_rf = {
+                    "Accuracy": rf_metrics["Accuracy"],
+                    "Precision": rf_metrics["Precision"],
+                    "Recall": rf_metrics["Recall"],
+                    "F1 Score": rf_metrics["F1 Score"],
+                    "AUC": rf_metrics["AUC"]
+                }
+                metrics_df_rf = pd.DataFrame({
+                    "Metric": list(metrics_rf.keys()),
+                    "Value": list(metrics_rf.values())
+                })
+                fig = px.bar(
+                    metrics_df_rf,
+                    x="Metric",
+                    y="Value",
+                    color="Value",
+                    color_continuous_scale="Viridis",
+                    title="Key Performance Metrics",
+                    labels={"Value": "Score (0-1)"}
+                )
+                fig.update_layout(yaxis_range=[0.0, 1.0])
+                st.plotly_chart(fig, use_container_width=True)
+            else:
+                st.warning("Metrics not found for Random Forest.")
             st.subheader("Data Leakage Analysis")
             st.markdown("""
             Despite excellent metrics, we discovered a significant data leakage issue:
-            
             - The `ratio_to_median_purchase_price` feature had a 46% correlation with fraud
             - When we removed just this one feature, accuracy dropped from 99.98% to 48.16%
             - This indicated that a single feature was essentially "giving away" the answer
-            
             This finding is crucial for real-world applications, as:
             1. Such a powerful single indicator might not be available in real-time
             2. Fraudsters could potentially learn to circumvent this single detection mechanism
             3. The model wasn't learning complex patterns but relying heavily on one feature
             """)
-        
+
         # Logistic Regression tab
         with model_tabs[1]:
             st.header("Logistic Regression")
             st.markdown("""
             Logistic Regression provided a strong baseline model with good interpretability.
-            
             **Configuration:**
             - C: 0.01 (strong regularization)
             - class_weight: 'balanced'
             - solver: 'liblinear'
             - max_iter: 1000
             """)
-            
-            # Display images if available
             col1, col2 = st.columns(2)
-            
             with col1:
                 try:
                     st.image("confusion_matrix_Logistic Regression.png", caption="Confusion Matrix", use_container_width=True)
                 except:
                     st.warning("Confusion matrix image not found.")
-            
             with col2:
                 try:
                     st.image("roc_curve_Logistic Regression.png", caption="ROC Curve", use_container_width=True)
                 except:
                     st.warning("ROC curve image not found.")
-            
-            # Metrics
             st.subheader("Performance Metrics")
-            metrics_lr = {
-                "Accuracy": 0.9994,
-                "Precision": 0.9992,
-                "Recall": 0.9990,
-                "F1 Score": 0.9991,
-                "AUC": 0.9995
-            }
-            
-            # Create a DataFrame for metrics display
-            metrics_df = pd.DataFrame({
-                "Metric": list(metrics_lr.keys()),
-                "Value": list(metrics_lr.values())
-            })
-            
-            # Display metrics as a bar chart
-            fig = px.bar(
-                metrics_df,
-                x="Metric",
-                y="Value",
-                color="Value",
-                color_continuous_scale="Viridis",
-                title="Key Performance Metrics",
-                labels={"Value": "Score (0-1)"}
-            )
-            fig.update_layout(yaxis_range=[0.9, 1.0])
-            st.plotly_chart(fig, use_container_width=True)
-        
+            lr_metrics = get_metrics_for("Logistic Regression")
+            if lr_metrics is not None:
+                metrics_lr = {
+                    "Accuracy": lr_metrics["Accuracy"],
+                    "Precision": lr_metrics["Precision"],
+                    "Recall": lr_metrics["Recall"],
+                    "F1 Score": lr_metrics["F1 Score"],
+                    "AUC": lr_metrics["AUC"]
+                }
+                metrics_df_lr = pd.DataFrame({
+                    "Metric": list(metrics_lr.keys()),
+                    "Value": list(metrics_lr.values())
+                })
+                fig = px.bar(
+                    metrics_df_lr,
+                    x="Metric",
+                    y="Value",
+                    color="Value",
+                    color_continuous_scale="Viridis",
+                    title="Key Performance Metrics",
+                    labels={"Value": "Score (0-1)"}
+                )
+                fig.update_layout(yaxis_range=[0.0, 1.0])
+                st.plotly_chart(fig, use_container_width=True)
+            else:
+                st.warning("Metrics not found for Logistic Regression.")
+
         # Decision Tree tab
         with model_tabs[2]:
             st.header("Decision Tree")
             st.markdown("""
             The Decision Tree model offered good explainability with competitive performance.
-            
             **Configuration:**
             - max_depth: 4
             - min_samples_split: 50
             - min_samples_leaf: 20
             - class_weight: 'balanced'
             """)
-            
-            # Display images if available
             col1, col2 = st.columns(2)
-            
             with col1:
                 try:
                     st.image("confusion_matrix_Decision Tree.png", caption="Confusion Matrix", use_container_width=True)
                 except:
                     st.warning("Confusion matrix image not found.")
-            
             with col2:
                 try:
                     st.image("roc_curve_Decision Tree.png", caption="ROC Curve", use_container_width=True)
                 except:
                     st.warning("ROC curve image not found.")
-            
-            # Metrics
             st.subheader("Performance Metrics")
-            metrics_dt = {
-                "Accuracy": 0.9996,
-                "Precision": 0.9994,
-                "Recall": 0.9993,
-                "F1 Score": 0.9993,
-                "AUC": 0.9996
-            }
-            
-            # Create a DataFrame for metrics display
-            metrics_df = pd.DataFrame({
-                "Metric": list(metrics_dt.keys()),
-                "Value": list(metrics_dt.values())
-            })
-            
-            # Display metrics as a bar chart
-            fig = px.bar(
-                metrics_df,
-                x="Metric",
-                y="Value",
-                color="Value",
-                color_continuous_scale="Viridis",
-                title="Key Performance Metrics",
-                labels={"Value": "Score (0-1)"}
-            )
-            fig.update_layout(yaxis_range=[0.9, 1.0])
-            st.plotly_chart(fig, use_container_width=True)
-        
+            dt_metrics = get_metrics_for("Decision Tree")
+            if dt_metrics is not None:
+                metrics_dt = {
+                    "Accuracy": dt_metrics["Accuracy"],
+                    "Precision": dt_metrics["Precision"],
+                    "Recall": dt_metrics["Recall"],
+                    "F1 Score": dt_metrics["F1 Score"],
+                    "AUC": dt_metrics["AUC"]
+                }
+                metrics_df_dt = pd.DataFrame({
+                    "Metric": list(metrics_dt.keys()),
+                    "Value": list(metrics_dt.values())
+                })
+                fig = px.bar(
+                    metrics_df_dt,
+                    x="Metric",
+                    y="Value",
+                    color="Value",
+                    color_continuous_scale="Viridis",
+                    title="Key Performance Metrics",
+                    labels={"Value": "Score (0-1)"}
+                )
+                fig.update_layout(yaxis_range=[0.0, 1.0])
+                st.plotly_chart(fig, use_container_width=True)
+            else:
+                st.warning("Metrics not found for Decision Tree.")
+
         # SGD Classifier tab
         with model_tabs[3]:
             st.header("SGD Classifier (Linear SVM)")
             st.markdown("""
             The SGD Classifier (configured as a Linear SVM) offered fast training time with good scalability.
-            
             **Configuration:**
             - loss: 'hinge' (SVM)
             - penalty: 'l2'
@@ -781,71 +767,51 @@ def main():
             - class_weight: 'balanced'
             - max_iter: 1000
             """)
-            
-            # Display images if available
             col1, col2 = st.columns(2)
-            
             with col1:
                 try:
                     st.image("confusion_matrix_SGD Classifier.png", caption="Confusion Matrix", use_container_width=True)
                 except:
                     st.warning("Confusion matrix image not found.")
-            
             with col2:
                 try:
                     st.image("roc_curve_SGD Classifier.png", caption="ROC Curve", use_container_width=True)
                 except:
                     st.warning("ROC curve image not found.")
-            
-            # Metrics
             st.subheader("Performance Metrics")
-            metrics_sgd = {
-                "Accuracy": 0.9992,
-                "Precision": 0.9990,
-                "Recall": 0.9989,
-                "F1 Score": 0.9989,
-                "AUC": 0.9992
-            }
-            
-            # Create a DataFrame for metrics display
-            metrics_df = pd.DataFrame({
-                "Metric": list(metrics_sgd.keys()),
-                "Value": list(metrics_sgd.values())
-            })
-            
-            # Display metrics as a bar chart
-            fig = px.bar(
-                metrics_df,
-                x="Metric",
-                y="Value",
-                color="Value",
-                color_continuous_scale="Viridis",
-                title="Key Performance Metrics",
-                labels={"Value": "Score (0-1)"}
-            )
-            fig.update_layout(yaxis_range=[0.9, 1.0])
-            st.plotly_chart(fig, use_container_width=True)
-        
+            sgd_metrics = get_metrics_for("SGD Classifier")
+            if sgd_metrics is not None:
+                metrics_sgd = {
+                    "Accuracy": sgd_metrics["Accuracy"],
+                    "Precision": sgd_metrics["Precision"],
+                    "Recall": sgd_metrics["Recall"],
+                    "F1 Score": sgd_metrics["F1 Score"],
+                    "AUC": sgd_metrics["AUC"]
+                }
+                metrics_df_sgd = pd.DataFrame({
+                    "Metric": list(metrics_sgd.keys()),
+                    "Value": list(metrics_sgd.values())
+                })
+                fig = px.bar(
+                    metrics_df_sgd,
+                    x="Metric",
+                    y="Value",
+                    color="Value",
+                    color_continuous_scale="Viridis",
+                    title="Key Performance Metrics",
+                    labels={"Value": "Score (0-1)"}
+                )
+                fig.update_layout(yaxis_range=[0.0, 1.0])
+                st.plotly_chart(fig, use_container_width=True)
+            else:
+                st.warning("Metrics not found for SGD Classifier.")
+
         # Model comparison section
         st.header("Model Comparison")
-        
-        # Create a DataFrame for comparison
-        comparison_data = {
-            "Model": ["Random Forest", "Logistic Regression", "Decision Tree", "SGD Classifier"],
-            "Accuracy": [0.9998, 0.9994, 0.9996, 0.9992],
-            "Precision": [0.9997, 0.9992, 0.9994, 0.9990],
-            "Recall": [0.9996, 0.9990, 0.9993, 0.9989],
-            "F1 Score": [0.9996, 0.9991, 0.9993, 0.9989],
-            "AUC": [0.9998, 0.9995, 0.9996, 0.9992]
-        }
-        
-        comparison_df = pd.DataFrame(comparison_data)
-        
-        # Create a radar chart for model comparison
+        # Use the loaded metrics_df for the comparison table and radar chart
+        comparison_df = metrics_df.copy()
         categories = ['Accuracy', 'Precision', 'Recall', 'F1 Score', 'AUC']
-        
         fig = go.Figure()
-        
         for i, model in enumerate(comparison_df["Model"]):
             fig.add_trace(go.Scatterpolar(
                 r=[comparison_df.iloc[i][cat] for cat in categories],
@@ -853,41 +819,31 @@ def main():
                 fill='toself',
                 name=model
             ))
-        
         fig.update_layout(
             polar=dict(
                 radialaxis=dict(
                     visible=True,
-                    range=[0.998, 1]
+                    range=[0.0, 1]
                 )),
             title="Model Performance Comparison",
             showlegend=True
         )
-        
         st.plotly_chart(fig, use_container_width=True)
-        
-        # Display comparison table
         st.subheader("Performance Metrics Comparison")
         st.dataframe(comparison_df, use_container_width=True)
-        
-        # Display precision-recall curve if available
         st.subheader("Precision-Recall Curves")
         try:
             st.image("precision_recall_curve.png", caption="Precision-Recall Curves for All Models", use_container_width=True)
         except:
             st.warning("Precision-recall curve image not found.")
-            
-        # Final recommendation
         st.subheader("Model Selection Rationale")
         st.markdown("""
         **Random Forest was selected as the final model for the following reasons:**
-        
         1. Highest overall performance across all metrics
         2. Better generalization to unseen data
         3. Provides feature importance for explainability
         4. More robust to the data leakage issue
         5. Good balance between precision and recall
-        
         While all models showed exceptional performance due to the strong signal in the 
         `ratio_to_median_purchase_price` feature, Random Forest provided the most balanced approach
         and better handling of edge cases.

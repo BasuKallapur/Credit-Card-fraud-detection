@@ -7,7 +7,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression, SGDClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, roc_curve, auc
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, roc_curve, auc, precision_score, recall_score, f1_score, roc_auc_score
 from sklearn.utils import parallel_backend  # Added for better performance
 import warnings
 import time
@@ -304,6 +304,36 @@ model_results = pd.DataFrame({
     'Accuracy': accuracies
 }).sort_values('Accuracy', ascending=False)
 print(model_results)
+
+# --- NEW: Save all metrics for each model to CSV ---
+# Calculate all metrics for each model on the test set
+metrics_data = []
+model_objs = [lr_model.best_estimator_, dt_model.best_estimator_, sgd_model.best_estimator_, rf_model.best_estimator_]
+model_names = ['Logistic Regression', 'Decision Tree', 'SGD Classifier', 'Random Forest']
+
+for model, name in zip(model_objs, model_names):
+    y_pred = model.predict(X_test_scaled)
+    if hasattr(model, 'predict_proba'):
+        y_score = model.predict_proba(X_test_scaled)[:, 1]
+    else:
+        y_score = model.decision_function(X_test_scaled)
+    acc = accuracy_score(y_test, y_pred)
+    prec = precision_score(y_test, y_pred)
+    rec = recall_score(y_test, y_pred)
+    f1 = f1_score(y_test, y_pred)
+    auc = roc_auc_score(y_test, y_score)
+    metrics_data.append({
+        'Model': name,
+        'Accuracy': acc,
+        'Precision': prec,
+        'Recall': rec,
+        'F1 Score': f1,
+        'AUC': auc
+    })
+
+metrics_df = pd.DataFrame(metrics_data)
+metrics_df.to_csv('model_metrics.csv', index=False)
+print("\nAll model metrics saved to 'model_metrics.csv'.")
 
 # Save the best model
 best_model_index = np.argmax(accuracies)
