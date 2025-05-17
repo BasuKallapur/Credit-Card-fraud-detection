@@ -9,6 +9,13 @@ from fraud_predictor import predict_transaction
 import plotly.graph_objects as go
 import plotly.express as px
 
+# Check for model files and create them if not found
+if not os.path.exists('fraud_model.pkl') or not os.path.exists('scaler.pkl'):
+    print("Model files not found. Creating them...")
+    import fraud_predictor
+    fraud_predictor.train_save_model()
+    print("Model files created successfully!")
+
 # Page configuration
 st.set_page_config(
     page_title="Credit Card Fraud Detection",
