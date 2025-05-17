@@ -46,7 +46,13 @@ def train_save_model():
             print("Loaded card_transdata.csv")
         except Exception as e2:
             print(f"Error loading card_transdata.csv: {e2}")
-            raise
+            try:
+                print("Attempting to load card_transdata_sample.csv")
+                df = pd.read_csv("card_transdata_sample.csv")
+                print("Loaded card_transdata_sample.csv (sample dataset)")
+            except Exception as e3:
+                print(f"Error loading card_transdata_sample.csv: {e3}")
+                raise Exception("No dataset found. Please ensure at least one dataset file is available.")
     
     print(f"Dataset loaded with shape: {df.shape}")
     

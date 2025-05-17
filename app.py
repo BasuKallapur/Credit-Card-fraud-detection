@@ -31,9 +31,17 @@ def load_model_and_scaler():
         model = joblib.load('fraud_model.pkl')
         scaler = joblib.load('scaler.pkl')
         return model, scaler
-    except:
-        st.error("Model files not found. Please run 'python fraud_predictor.py' first to create the model.")
-        return None, None
+    except Exception as e:
+        st.warning(f"Could not load model files: {e}. Attempting to train a new model...")
+        try:
+            import fraud_predictor
+            # Force train a new model regardless of existing files
+            model, scaler = fraud_predictor.train_save_model()
+            st.success("Successfully trained and saved a new model!")
+            return model, scaler
+        except Exception as train_error:
+            st.error(f"Failed to train a new model: {train_error}")
+            return None, None
 
 # Function to load dataset for exploration
 @st.cache_data
