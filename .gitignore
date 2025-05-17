@@ -19,8 +19,11 @@ env/
 # Model files (we want to include these for deployment)
 # *.pkl
 
-# Large dataset files
-card_transdata*.csv
+# Large dataset files - exclude main datasets but keep sample
+card_transdata.csv
+card_transdata copy.csv
+# DO NOT exclude the sample dataset:
+# card_transdata_sample.csv
 
 # OS specific files
 .DS_Store
