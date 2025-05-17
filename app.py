@@ -628,14 +628,24 @@ def main():
             col1, col2 = st.columns(2)
             with col1:
                 try:
-                    st.image("confusion_matrix_Random Forest.png", caption="Confusion Matrix", use_container_width=True)
+                    # Use underscore instead of space in filename
+                    st.image("confusion_matrix_Random_Forest.png", caption="Confusion Matrix", use_container_width=True)
                 except:
-                    st.warning("Confusion matrix image not found.")
+                    try:
+                        # Try with space in case that's how it was saved
+                        st.image("confusion_matrix_Random Forest.png", caption="Confusion Matrix", use_container_width=True)
+                    except:
+                        st.warning("Confusion matrix image not found.")
             with col2:
                 try:
-                    st.image("roc_curve_Random Forest.png", caption="ROC Curve", use_container_width=True)
+                    # Use underscore instead of space in filename
+                    st.image("roc_curve_Random_Forest.png", caption="ROC Curve", use_container_width=True)
                 except:
-                    st.warning("ROC curve image not found.")
+                    try:
+                        # Try with space in case that's how it was saved
+                        st.image("roc_curve_Random Forest.png", caption="ROC Curve", use_container_width=True)
+                    except:
+                        st.warning("ROC curve image not found.")
             st.subheader("Feature Importance")
             feature_importance_fig = create_feature_importance_chart()
             if feature_importance_fig:
@@ -693,14 +703,24 @@ def main():
             col1, col2 = st.columns(2)
             with col1:
                 try:
-                    st.image("confusion_matrix_Logistic Regression.png", caption="Confusion Matrix", use_container_width=True)
+                    # Use underscore instead of space in filename
+                    st.image("confusion_matrix_Logistic_Regression.png", caption="Confusion Matrix", use_container_width=True)
                 except:
-                    st.warning("Confusion matrix image not found.")
+                    try:
+                        # Try with space in case that's how it was saved
+                        st.image("confusion_matrix_Logistic Regression.png", caption="Confusion Matrix", use_container_width=True)
+                    except:
+                        st.warning("Confusion matrix image not found.")
             with col2:
                 try:
-                    st.image("roc_curve_Logistic Regression.png", caption="ROC Curve", use_container_width=True)
+                    # Use underscore instead of space in filename
+                    st.image("roc_curve_Logistic_Regression.png", caption="ROC Curve", use_container_width=True)
                 except:
-                    st.warning("ROC curve image not found.")
+                    try:
+                        # Try with space in case that's how it was saved
+                        st.image("roc_curve_Logistic Regression.png", caption="ROC Curve", use_container_width=True)
+                    except:
+                        st.warning("ROC curve image not found.")
             st.subheader("Performance Metrics")
             lr_metrics = get_metrics_for("Logistic Regression")
             if lr_metrics is not None:
@@ -743,14 +763,24 @@ def main():
             col1, col2 = st.columns(2)
             with col1:
                 try:
-                    st.image("confusion_matrix_Decision Tree.png", caption="Confusion Matrix", use_container_width=True)
+                    # Use underscore instead of space in filename
+                    st.image("confusion_matrix_Decision_Tree.png", caption="Confusion Matrix", use_container_width=True)
                 except:
-                    st.warning("Confusion matrix image not found.")
+                    try:
+                        # Try with space in case that's how it was saved
+                        st.image("confusion_matrix_Decision Tree.png", caption="Confusion Matrix", use_container_width=True)
+                    except:
+                        st.warning("Confusion matrix image not found.")
             with col2:
                 try:
-                    st.image("roc_curve_Decision Tree.png", caption="ROC Curve", use_container_width=True)
+                    # Use underscore instead of space in filename
+                    st.image("roc_curve_Decision_Tree.png", caption="ROC Curve", use_container_width=True)
                 except:
-                    st.warning("ROC curve image not found.")
+                    try:
+                        # Try with space in case that's how it was saved
+                        st.image("roc_curve_Decision Tree.png", caption="ROC Curve", use_container_width=True)
+                    except:
+                        st.warning("ROC curve image not found.")
             st.subheader("Performance Metrics")
             dt_metrics = get_metrics_for("Decision Tree")
             if dt_metrics is not None:
@@ -794,14 +824,24 @@ def main():
             col1, col2 = st.columns(2)
             with col1:
                 try:
-                    st.image("confusion_matrix_SGD Classifier.png", caption="Confusion Matrix", use_container_width=True)
+                    # Use underscore instead of space in filename
+                    st.image("confusion_matrix_SGD_Classifier.png", caption="Confusion Matrix", use_container_width=True)
                 except:
-                    st.warning("Confusion matrix image not found.")
+                    try:
+                        # Try with space in case that's how it was saved
+                        st.image("confusion_matrix_SGD Classifier.png", caption="Confusion Matrix", use_container_width=True)
+                    except:
+                        st.warning("Confusion matrix image not found.")
             with col2:
                 try:
-                    st.image("roc_curve_SGD Classifier.png", caption="ROC Curve", use_container_width=True)
+                    # Use underscore instead of space in filename
+                    st.image("roc_curve_SGD_Classifier.png", caption="ROC Curve", use_container_width=True)
                 except:
-                    st.warning("ROC curve image not found.")
+                    try:
+                        # Try with space in case that's how it was saved
+                        st.image("roc_curve_SGD Classifier.png", caption="ROC Curve", use_container_width=True)
+                    except:
+                        st.warning("ROC curve image not found.")
             st.subheader("Performance Metrics")
             sgd_metrics = get_metrics_for("SGD Classifier")
             if sgd_metrics is not None:
@@ -857,9 +897,14 @@ def main():
         st.dataframe(comparison_df, use_container_width=True)
         st.subheader("Precision-Recall Curves")
         try:
+            # Try with underscores first
             st.image("precision_recall_curve.png", caption="Precision-Recall Curves for All Models", use_container_width=True)
         except:
-            st.warning("Precision-recall curve image not found.")
+            try:
+                # Try with hyphens if that fails
+                st.image("precision-recall-curve.png", caption="Precision-Recall Curves for All Models", use_container_width=True)
+            except:
+                st.warning("Precision-recall curve image not found.")
         st.subheader("Model Selection Rationale")
         st.markdown("""
         **Random Forest was selected as the final model for the following reasons:**

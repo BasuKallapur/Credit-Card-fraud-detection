@@ -131,9 +131,11 @@ def evaluate_model(model, X_val_scaled, y_val, X_test_scaled, y_test, model_name
     plt.title(f'Confusion Matrix - {model_name} (Test Set)')
     plt.xlabel('Predicted')
     plt.ylabel('Actual')
-    plt.savefig(f'confusion_matrix_{model_name}.png')
+    # Replace spaces with underscores in the filename
+    safe_model_name = model_name.replace(" ", "_")
+    plt.savefig(f'confusion_matrix_{safe_model_name}.png')
     plt.close()
-    print(f"Confusion matrix saved as 'confusion_matrix_{model_name}.png'")
+    print(f"Confusion matrix saved as 'confusion_matrix_{safe_model_name}.png'")
     
     # Calculate ROC curve and AUC if the model supports probability predictions
     try:
@@ -149,9 +151,10 @@ def evaluate_model(model, X_val_scaled, y_val, X_test_scaled, y_test, model_name
         plt.ylabel('True Positive Rate')
         plt.title(f'ROC Curve - {model_name} (Test Set)')
         plt.legend(loc='lower right')
-        plt.savefig(f'roc_curve_{model_name}.png')
+        # Replace spaces with underscores in the filename
+        plt.savefig(f'roc_curve_{safe_model_name}.png')
         plt.close()
-        print(f"ROC curve saved as 'roc_curve_{model_name}.png'")
+        print(f"ROC curve saved as 'roc_curve_{safe_model_name}.png'")
     except:
         print(f"ROC curve not available for {model_name}")
     
