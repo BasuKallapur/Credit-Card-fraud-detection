@@ -35,7 +35,16 @@ def load_data():
         try:
             df = pd.read_csv("card_transdata copy.csv")
         except:
-            df = pd.read_csv("card_transdata.csv")
+            try:
+                df = pd.read_csv("card_transdata.csv")
+            except:
+                try:
+                    # Try to load the sample dataset for deployment
+                    df = pd.read_csv("card_transdata_sample.csv")
+                    st.info("Using sample dataset (1,000 records) for demonstration purposes.")
+                except:
+                    st.warning("Dataset not found for exploration view. Only prediction will be available.")
+                    return None
         return df
     except:
         st.warning("Dataset not found for exploration view. Only prediction will be available.")

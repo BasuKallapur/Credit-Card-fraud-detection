@@ -16,8 +16,11 @@ env/
 # Jupyter Notebook
 .ipynb_checkpoints
 
-# Model files (optional, comment out if you want to include these)
+# Model files (we want to include these for deployment)
 # *.pkl
+
+# Large dataset files
+card_transdata*.csv
 
 # OS specific files
 .DS_Store
