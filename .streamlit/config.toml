@@ -2,6 +2,8 @@
 headless = true
 enableCORS = false
 enableXsrfProtection = false
+maxUploadSize = 5
+maxMessageSize = 50
 
 [browser]
 gatherUsageStats = false
@@ -10,4 +12,11 @@ gatherUsageStats = false
 primaryColor = "#3498db"
 backgroundColor = "#ffffff"
 secondaryBackgroundColor = "#f8f9fa"
-textColor = "#262730" 
+textColor = "#262730"
+
+[runner]
+fastReruns = true
+magicEnabled = false
+
+[global]
+developmentMode = false 
