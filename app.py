@@ -103,6 +103,8 @@ def load_data():
 def get_image_or_placeholder(image_path, image_type="confusion_matrix"):
     success = False
     try:
+        # Get just the filename without path for error messages
+        image_filename = image_path.split('/')[-1]
         st.image(image_path, use_container_width=True)
         success = True
     except:
@@ -111,7 +113,7 @@ def get_image_or_placeholder(image_path, image_type="confusion_matrix"):
     if not success:
         # Create a Streamlit placeholder instead of an image file
         if image_type == "confusion_matrix":
-            st.warning("Could not load confusion matrix image")
+            st.warning(f"Could not load {image_filename}")
             
             # Create a simple confusion matrix using Streamlit components
             col1, col2 = st.columns(2)
@@ -135,7 +137,7 @@ def get_image_or_placeholder(image_path, image_type="confusion_matrix"):
                 - **AUC**: 98.2%
                 """)
         else:  # ROC curve
-            st.warning("Could not load ROC curve image")
+            st.warning(f"Could not load {image_filename}")
             
             # Create a simple text description of the ROC curve
             st.markdown("### ROC Curve")
@@ -722,16 +724,16 @@ def main():
             col1, col2 = st.columns(2)
             with col1:
                 try:
-                    # Use only underscore versions
-                    st.image("confusion_matrix_Random_Forest.png", caption="Confusion Matrix", use_container_width=True)
+                    # Use static file serving for images
+                    st.image("app/static/confusion_matrix_Random_Forest.png", caption="Confusion Matrix", use_container_width=True)
                 except:
-                    get_image_or_placeholder("confusion_matrix_Random_Forest.png")
+                    get_image_or_placeholder("app/static/confusion_matrix_Random_Forest.png")
             with col2:
                 try:
-                    # Use only underscore versions
-                    st.image("roc_curve_Random_Forest.png", caption="ROC Curve", use_container_width=True)
+                    # Use static file serving for images
+                    st.image("app/static/roc_curve_Random_Forest.png", caption="ROC Curve", use_container_width=True)
                 except:
-                    get_image_or_placeholder("roc_curve_Random_Forest.png")
+                    get_image_or_placeholder("app/static/roc_curve_Random_Forest.png")
             st.subheader("Feature Importance")
             feature_importance_fig = create_feature_importance_chart()
             if feature_importance_fig:
@@ -789,16 +791,16 @@ def main():
             col1, col2 = st.columns(2)
             with col1:
                 try:
-                    # Use only underscore versions
-                    st.image("confusion_matrix_Logistic_Regression.png", caption="Confusion Matrix", use_container_width=True)
+                    # Use static file serving for images
+                    st.image("app/static/confusion_matrix_Logistic_Regression.png", caption="Confusion Matrix", use_container_width=True)
                 except:
-                    get_image_or_placeholder("confusion_matrix_Logistic_Regression.png")
+                    get_image_or_placeholder("app/static/confusion_matrix_Logistic_Regression.png")
             with col2:
                 try:
-                    # Use only underscore versions
-                    st.image("roc_curve_Logistic_Regression.png", caption="ROC Curve", use_container_width=True)
+                    # Use static file serving for images
+                    st.image("app/static/roc_curve_Logistic_Regression.png", caption="ROC Curve", use_container_width=True)
                 except:
-                    get_image_or_placeholder("roc_curve_Logistic_Regression.png")
+                    get_image_or_placeholder("app/static/roc_curve_Logistic_Regression.png")
             st.subheader("Performance Metrics")
             lr_metrics = get_metrics_for("Logistic Regression")
             if lr_metrics is not None:
@@ -841,16 +843,16 @@ def main():
             col1, col2 = st.columns(2)
             with col1:
                 try:
-                    # Use only underscore versions
-                    st.image("confusion_matrix_Decision_Tree.png", caption="Confusion Matrix", use_container_width=True)
+                    # Use static file serving for images
+                    st.image("app/static/confusion_matrix_Decision_Tree.png", caption="Confusion Matrix", use_container_width=True)
                 except:
-                    get_image_or_placeholder("confusion_matrix_Decision_Tree.png")
+                    get_image_or_placeholder("app/static/confusion_matrix_Decision_Tree.png")
             with col2:
                 try:
-                    # Use only underscore versions
-                    st.image("roc_curve_Decision_Tree.png", caption="ROC Curve", use_container_width=True)
+                    # Use static file serving for images
+                    st.image("app/static/roc_curve_Decision_Tree.png", caption="ROC Curve", use_container_width=True)
                 except:
-                    get_image_or_placeholder("roc_curve_Decision_Tree.png")
+                    get_image_or_placeholder("app/static/roc_curve_Decision_Tree.png")
             st.subheader("Performance Metrics")
             dt_metrics = get_metrics_for("Decision Tree")
             if dt_metrics is not None:
@@ -894,16 +896,16 @@ def main():
             col1, col2 = st.columns(2)
             with col1:
                 try:
-                    # Use only underscore versions
-                    st.image("confusion_matrix_SGD_Classifier.png", caption="Confusion Matrix", use_container_width=True)
+                    # Use static file serving for images
+                    st.image("app/static/confusion_matrix_SGD_Classifier.png", caption="Confusion Matrix", use_container_width=True)
                 except:
-                    get_image_or_placeholder("confusion_matrix_SGD_Classifier.png")
+                    get_image_or_placeholder("app/static/confusion_matrix_SGD_Classifier.png")
             with col2:
                 try:
-                    # Use only underscore versions
-                    st.image("roc_curve_SGD_Classifier.png", caption="ROC Curve", use_container_width=True)
+                    # Use static file serving for images
+                    st.image("app/static/roc_curve_SGD_Classifier.png", caption="ROC Curve", use_container_width=True)
                 except:
-                    get_image_or_placeholder("roc_curve_SGD_Classifier.png")
+                    get_image_or_placeholder("app/static/roc_curve_SGD_Classifier.png")
             st.subheader("Performance Metrics")
             sgd_metrics = get_metrics_for("SGD Classifier")
             if sgd_metrics is not None:
@@ -959,8 +961,8 @@ def main():
         st.dataframe(comparison_df, use_container_width=True)
         st.subheader("Precision-Recall Curves")
         try:
-            # Use correct filename
-            st.image("precision_recall_curve.png", caption="Precision-Recall Curves for All Models", use_container_width=True)
+            # Use static file serving for images
+            st.image("app/static/precision_recall_curve.png", caption="Precision-Recall Curves for All Models", use_container_width=True)
         except:
             st.warning("Could not load precision-recall curve image")
             # Create a text-based alternative
