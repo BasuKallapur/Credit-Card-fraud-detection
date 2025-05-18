@@ -722,24 +722,16 @@ def main():
             col1, col2 = st.columns(2)
             with col1:
                 try:
-                    # Use underscore instead of space in filename
+                    # Use only underscore versions
                     st.image("confusion_matrix_Random_Forest.png", caption="Confusion Matrix", use_container_width=True)
                 except:
-                    try:
-                        # Try with space in case that's how it was saved
-                        st.image("confusion_matrix_Random Forest.png", caption="Confusion Matrix", use_container_width=True)
-                    except:
-                        get_image_or_placeholder("confusion_matrix_Random_Forest.png")
+                    get_image_or_placeholder("confusion_matrix_Random_Forest.png")
             with col2:
                 try:
-                    # Use underscore instead of space in filename
+                    # Use only underscore versions
                     st.image("roc_curve_Random_Forest.png", caption="ROC Curve", use_container_width=True)
                 except:
-                    try:
-                        # Try with space in case that's how it was saved
-                        st.image("roc_curve_Random Forest.png", caption="ROC Curve", use_container_width=True)
-                    except:
-                        get_image_or_placeholder("roc_curve_Random_Forest.png")
+                    get_image_or_placeholder("roc_curve_Random_Forest.png")
             st.subheader("Feature Importance")
             feature_importance_fig = create_feature_importance_chart()
             if feature_importance_fig:
@@ -797,24 +789,16 @@ def main():
             col1, col2 = st.columns(2)
             with col1:
                 try:
-                    # Use underscore instead of space in filename
+                    # Use only underscore versions
                     st.image("confusion_matrix_Logistic_Regression.png", caption="Confusion Matrix", use_container_width=True)
                 except:
-                    try:
-                        # Try with space in case that's how it was saved
-                        st.image("confusion_matrix_Logistic Regression.png", caption="Confusion Matrix", use_container_width=True)
-                    except:
-                        get_image_or_placeholder("confusion_matrix_Logistic_Regression.png")
+                    get_image_or_placeholder("confusion_matrix_Logistic_Regression.png")
             with col2:
                 try:
-                    # Use underscore instead of space in filename
+                    # Use only underscore versions
                     st.image("roc_curve_Logistic_Regression.png", caption="ROC Curve", use_container_width=True)
                 except:
-                    try:
-                        # Try with space in case that's how it was saved
-                        st.image("roc_curve_Logistic Regression.png", caption="ROC Curve", use_container_width=True)
-                    except:
-                        get_image_or_placeholder("roc_curve_Logistic_Regression.png")
+                    get_image_or_placeholder("roc_curve_Logistic_Regression.png")
             st.subheader("Performance Metrics")
             lr_metrics = get_metrics_for("Logistic Regression")
             if lr_metrics is not None:
@@ -857,24 +841,16 @@ def main():
             col1, col2 = st.columns(2)
             with col1:
                 try:
-                    # Use underscore instead of space in filename
+                    # Use only underscore versions
                     st.image("confusion_matrix_Decision_Tree.png", caption="Confusion Matrix", use_container_width=True)
                 except:
-                    try:
-                        # Try with space in case that's how it was saved
-                        st.image("confusion_matrix_Decision Tree.png", caption="Confusion Matrix", use_container_width=True)
-                    except:
-                        get_image_or_placeholder("confusion_matrix_Decision_Tree.png")
+                    get_image_or_placeholder("confusion_matrix_Decision_Tree.png")
             with col2:
                 try:
-                    # Use underscore instead of space in filename
+                    # Use only underscore versions
                     st.image("roc_curve_Decision_Tree.png", caption="ROC Curve", use_container_width=True)
                 except:
-                    try:
-                        # Try with space in case that's how it was saved
-                        st.image("roc_curve_Decision Tree.png", caption="ROC Curve", use_container_width=True)
-                    except:
-                        get_image_or_placeholder("roc_curve_Decision_Tree.png")
+                    get_image_or_placeholder("roc_curve_Decision_Tree.png")
             st.subheader("Performance Metrics")
             dt_metrics = get_metrics_for("Decision Tree")
             if dt_metrics is not None:
@@ -918,24 +894,16 @@ def main():
             col1, col2 = st.columns(2)
             with col1:
                 try:
-                    # Use underscore instead of space in filename
+                    # Use only underscore versions
                     st.image("confusion_matrix_SGD_Classifier.png", caption="Confusion Matrix", use_container_width=True)
                 except:
-                    try:
-                        # Try with space in case that's how it was saved
-                        st.image("confusion_matrix_SGD Classifier.png", caption="Confusion Matrix", use_container_width=True)
-                    except:
-                        get_image_or_placeholder("confusion_matrix_SGD_Classifier.png")
+                    get_image_or_placeholder("confusion_matrix_SGD_Classifier.png")
             with col2:
                 try:
-                    # Use underscore instead of space in filename
+                    # Use only underscore versions
                     st.image("roc_curve_SGD_Classifier.png", caption="ROC Curve", use_container_width=True)
                 except:
-                    try:
-                        # Try with space in case that's how it was saved
-                        st.image("roc_curve_SGD Classifier.png", caption="ROC Curve", use_container_width=True)
-                    except:
-                        get_image_or_placeholder("roc_curve_SGD_Classifier.png")
+                    get_image_or_placeholder("roc_curve_SGD_Classifier.png")
             st.subheader("Performance Metrics")
             sgd_metrics = get_metrics_for("SGD Classifier")
             if sgd_metrics is not None:
@@ -990,23 +958,12 @@ def main():
         st.subheader("Performance Metrics Comparison")
         st.dataframe(comparison_df, use_container_width=True)
         st.subheader("Precision-Recall Curves")
-        success = False
         try:
-            # Try with underscores first
+            # Use correct filename
             st.image("precision_recall_curve.png", caption="Precision-Recall Curves for All Models", use_container_width=True)
-            success = True
         except:
-            try:
-                # Try with hyphens if that fails
-                st.image("precision-recall-curve.png", caption="Precision-Recall Curves for All Models", use_container_width=True)
-                success = True
-            except:
-                pass
-        
-        if not success:
-            # Create a text-based alternative
             st.warning("Could not load precision-recall curve image")
-            
+            # Create a text-based alternative
             st.markdown("### Precision-Recall Performance")
             
             # Create a simple table with precision-recall metrics
@@ -1035,6 +992,7 @@ def main():
                 st.metric("Best Average Precision", "0.98", "Random Forest")
             with col2:
                 st.metric("Best F1 Score", "0.96", "Random Forest")
+        
         st.subheader("Model Selection Rationale")
         st.markdown("""
         **Random Forest was selected as the final model for the following reasons:**
