@@ -88,6 +88,39 @@ def load_data():
         st.warning("Dataset not found for exploration view. Only prediction will be available.")
         return None
 
+# Function to generate placeholder images if original images are missing
+def get_image_or_placeholder(image_path, image_type="confusion_matrix"):
+    try:
+        return st.image(image_path, use_container_width=True)
+    except:
+        # Create a placeholder image if the original is not found
+        try:
+            plt.figure(figsize=(8, 6))
+            if image_type == "confusion_matrix":
+                # Generate a simple confusion matrix
+                plt.text(0.5, 0.5, "Placeholder Confusion Matrix\n(Image not found)", 
+                         ha='center', va='center', fontsize=14)
+                plt.axis('off')
+                placeholder_path = "placeholder_confusion_matrix.png"
+                plt.savefig(placeholder_path)
+                plt.close()
+                return st.image(placeholder_path, caption="Placeholder Confusion Matrix", use_container_width=True)
+            else:  # ROC curve
+                # Generate a simple ROC curve
+                plt.plot([0, 0, 1], [0, 1, 1], 'r-')
+                plt.plot([0, 1], [0, 1], 'k--')
+                plt.xlabel('False Positive Rate')
+                plt.ylabel('True Positive Rate')
+                plt.title('Placeholder ROC Curve (Image not found)')
+                plt.grid(True)
+                placeholder_path = "placeholder_roc_curve.png"
+                plt.savefig(placeholder_path)
+                plt.close()
+                return st.image(placeholder_path, caption="Placeholder ROC Curve", use_container_width=True)
+        except:
+            st.warning(f"Could not load or create {image_type} image.")
+            return None
+
 def create_correlation_heatmap(df):
     corr = df.corr()
     fig = px.imshow(
@@ -658,7 +691,7 @@ def main():
                         # Try with space in case that's how it was saved
                         st.image("confusion_matrix_Random Forest.png", caption="Confusion Matrix", use_container_width=True)
                     except:
-                        st.warning("Confusion matrix image not found.")
+                        get_image_or_placeholder("confusion_matrix_Random_Forest.png")
             with col2:
                 try:
                     # Use underscore instead of space in filename
@@ -668,7 +701,7 @@ def main():
                         # Try with space in case that's how it was saved
                         st.image("roc_curve_Random Forest.png", caption="ROC Curve", use_container_width=True)
                     except:
-                        st.warning("ROC curve image not found.")
+                        get_image_or_placeholder("roc_curve_Random_Forest.png")
             st.subheader("Feature Importance")
             feature_importance_fig = create_feature_importance_chart()
             if feature_importance_fig:
@@ -733,7 +766,7 @@ def main():
                         # Try with space in case that's how it was saved
                         st.image("confusion_matrix_Logistic Regression.png", caption="Confusion Matrix", use_container_width=True)
                     except:
-                        st.warning("Confusion matrix image not found.")
+                        get_image_or_placeholder("confusion_matrix_Logistic_Regression.png")
             with col2:
                 try:
                     # Use underscore instead of space in filename
@@ -743,7 +776,7 @@ def main():
                         # Try with space in case that's how it was saved
                         st.image("roc_curve_Logistic Regression.png", caption="ROC Curve", use_container_width=True)
                     except:
-                        st.warning("ROC curve image not found.")
+                        get_image_or_placeholder("roc_curve_Logistic_Regression.png")
             st.subheader("Performance Metrics")
             lr_metrics = get_metrics_for("Logistic Regression")
             if lr_metrics is not None:
@@ -793,7 +826,7 @@ def main():
                         # Try with space in case that's how it was saved
                         st.image("confusion_matrix_Decision Tree.png", caption="Confusion Matrix", use_container_width=True)
                     except:
-                        st.warning("Confusion matrix image not found.")
+                        get_image_or_placeholder("confusion_matrix_Decision_Tree.png")
             with col2:
                 try:
                     # Use underscore instead of space in filename
@@ -803,7 +836,7 @@ def main():
                         # Try with space in case that's how it was saved
                         st.image("roc_curve_Decision Tree.png", caption="ROC Curve", use_container_width=True)
                     except:
-                        st.warning("ROC curve image not found.")
+                        get_image_or_placeholder("roc_curve_Decision_Tree.png")
             st.subheader("Performance Metrics")
             dt_metrics = get_metrics_for("Decision Tree")
             if dt_metrics is not None:
@@ -854,7 +887,7 @@ def main():
                         # Try with space in case that's how it was saved
                         st.image("confusion_matrix_SGD Classifier.png", caption="Confusion Matrix", use_container_width=True)
                     except:
-                        st.warning("Confusion matrix image not found.")
+                        get_image_or_placeholder("confusion_matrix_SGD_Classifier.png")
             with col2:
                 try:
                     # Use underscore instead of space in filename
@@ -864,7 +897,7 @@ def main():
                         # Try with space in case that's how it was saved
                         st.image("roc_curve_SGD Classifier.png", caption="ROC Curve", use_container_width=True)
                     except:
-                        st.warning("ROC curve image not found.")
+                        get_image_or_placeholder("roc_curve_SGD_Classifier.png")
             st.subheader("Performance Metrics")
             sgd_metrics = get_metrics_for("SGD Classifier")
             if sgd_metrics is not None:
@@ -927,7 +960,24 @@ def main():
                 # Try with hyphens if that fails
                 st.image("precision-recall-curve.png", caption="Precision-Recall Curves for All Models", use_container_width=True)
             except:
-                st.warning("Precision-recall curve image not found.")
+                # Generate a placeholder precision-recall curve
+                try:
+                    plt.figure(figsize=(10, 8))
+                    plt.plot([0, 1], [1, 0], 'r-', label='Random Forest')
+                    plt.plot([0, 0.5, 1], [1, 0.8, 0], 'g-', label='Logistic Regression')
+                    plt.plot([0, 0.3, 1], [1, 0.7, 0], 'b-', label='Decision Tree')
+                    plt.plot([0, 0.7, 1], [1, 0.4, 0], 'y-', label='SGD Classifier')
+                    plt.xlabel('Recall')
+                    plt.ylabel('Precision')
+                    plt.title('Placeholder Precision-Recall Curves (Image not found)')
+                    plt.legend(loc='best')
+                    plt.grid(True)
+                    placeholder_path = "placeholder_pr_curve.png"
+                    plt.savefig(placeholder_path)
+                    plt.close()
+                    st.image(placeholder_path, caption="Placeholder Precision-Recall Curves", use_container_width=True)
+                except:
+                    st.warning("Could not load or create precision-recall curve image.")
         st.subheader("Model Selection Rationale")
         st.markdown("""
         **Random Forest was selected as the final model for the following reasons:**
