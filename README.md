@@ -1,20 +1,46 @@
 # Credit Card Fraud Detection
 
-Demo Video: https://drive.google.com/drive/folders/1-NOKIwnEFvgdzenzKa9rIe2ecsyEI3QC
+![Credit Card Fraud](static/credit_card_fraud.jpg)
 
-This project implements machine learning models for credit card fraud detection, with a focus on identifying and addressing data leakage issues while providing a practical application.
+## Demo
+
+Demo Video: [Watch Demo](https://drive.google.com/drive/folders/1-NOKIwnEFvgdzenzKa9rIe2ecsyEI3QC)
 
 ## Project Overview
 
-The project consists of:
+This project implements machine learning models for credit card fraud detection, with a focus on identifying and addressing data leakage issues while providing a practical application through both CLI and web interfaces.
+
+### Key Components
 
 1. **Analysis Script** (`credit_card_fraud_detection.py`): Compares four models (Logistic Regression, Decision Tree, SGD, Random Forest)
 2. **Model Training** (`fraud_predictor.py`): Trains and saves the best model (Random Forest)
-3. **Prediction Interface** (`predict_fraud.py`): User-friendly interface for fraud prediction
+3. **Prediction Interfaces**:
+   - Command-line interface (`predict_fraud.py`): Simple CLI for fraud prediction
+   - Streamlit dashboard (`app.py`): Interactive web application with visualizations
+
+## Features
+
+- **Fraud Prediction**: Input transaction details and get real-time fraud predictions
+- **Data Exploration**: Analyze the dataset with interactive visualizations
+- **Model Performance**: Compare the performance of different machine learning models
+- **Interactive Visualizations**: Explore data relationships with dynamic charts
+- **Educational Value**: Demonstrates data leakage issues in machine learning
+
+## Dataset
+
+The dataset contains the following features:
+- `distance_from_home` - Distance from home where the transaction happened
+- `distance_from_last_transaction` - Distance from last transaction
+- `ratio_to_median_purchase_price` - Ratio of purchased price to median purchase price (our critical feature)
+- `repeat_retailer` - Is the transaction from same retailer (1 for yes, 0 for no)
+- `used_chip` - Is the transaction through chip (1 for yes, 0 for no)
+- `used_pin_number` - Is the transaction using PIN number (1 for yes, 0 for no)
+- `online_order` - Is the transaction an online order (1 for yes, 0 for no)
+- `fraud` - Is the transaction fraudulent (target variable)
 
 ## Model Comparison
 
-The `credit_card_fraud_detection.py` script performs a comprehensive analysis of four different machine learning models:
+The project compares four different machine learning models:
 
 1. **Logistic Regression**
    - Configuration: Strong regularization (C=0.01, 0.1), balanced class weights
@@ -32,13 +58,6 @@ The `credit_card_fraud_detection.py` script performs a comprehensive analysis of
    - Configuration: Limited tree depth, high minimum samples for splits/leaves, balanced class weights
    - Evaluation: Accuracy, precision, recall, F1-score, ROC curve, confusion matrix
    - Feature importance analysis to identify key predictors
-
-The script generates various visualization files including:
-- Confusion matrices for each model
-- ROC curves showing model performance
-- Feature importance chart (for Random Forest)
-- Precision-recall curves
-- Model comparison summary
 
 ## Key Findings: Data Leakage Issue
 
@@ -65,34 +84,51 @@ This is an important finding because:
 2. Fraudsters could potentially learn to circumvent this single detection mechanism
 3. The model wasn't learning complex patterns but relying heavily on one feature
 
-For this project, we decided to keep using all features since:
-1. It demonstrates the importance of feature analysis in fraud detection
-2. The model still performs correctly according to the available data
-3. It highlights how important it is to understand your features before deploying models
+## Setup and Installation
 
-## Dataset
+### Prerequisites
 
-The dataset contains the following features:
-- `distance_from_home` - Distance from home where the transaction happened
-- `distance_from_last_transaction` - Distance from last transaction
-- `ratio_to_median_purchase_price` - Ratio of purchased price to median purchase price (our critical feature)
-- `repeat_retailer` - Is the transaction from same retailer (1 for yes, 0 for no)
-- `used_chip` - Is the transaction through chip (1 for yes, 0 for no)
-- `used_pin_number` - Is the transaction using PIN number (1 for yes, 0 for no)
-- `online_order` - Is the transaction an online order (1 for yes, 0 for no)
-- `fraud` - Is the transaction fraudulent (target variable)
+- Python 3.7 or higher (Python 3.10.12 recommended)
+- pip package manager
 
-## Setup
+### Installation Steps
 
-1. Ensure you have Python installed (3.7+ recommended)
+1. Clone the repository:
+```
+git clone <repository-url>
+cd Credit-Card-fraud-detection
+```
+
 2. Install the required dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
+```
+pip install -r requirements.txt
+```
+
+3. Ensure the model is trained and saved:
+```
+python fraud_predictor.py
+```
+This will create the necessary model files (`fraud_model.pkl` and `scaler.pkl`).
 
 ## Usage
 
-### Option 1: Run the Full Analysis
+### Option 1: Run the Streamlit Web Application
+
+For an interactive web dashboard with visualizations and predictions:
+
+```
+streamlit run app.py
+```
+
+Access the dashboard in your web browser at: http://localhost:8501
+
+The dashboard includes:
+- Fraud prediction interface
+- Data exploration visualizations
+- Model performance comparisons
+- Feature importance analysis
+
+### Option 2: Run the Full Analysis
 
 For a comprehensive analysis of different models and to see the data leakage issue:
 
@@ -106,21 +142,9 @@ This generates visualizations including:
 - Feature importance (showing the dominance of ratio_to_median_purchase_price)
 - Model comparison charts
 
-### Option 2: Train and Save the Model
+### Option 3: Use the Command-Line Prediction Interface
 
-To train and save the optimal Random Forest model:
-
-```
-python fraud_predictor.py
-```
-
-This creates:
-- `fraud_model.pkl` - The trained model
-- `scaler.pkl` - The standardization scaler
-
-### Option 3: Predict Fraud on New Transactions
-
-For an interactive prediction interface:
+For a simple command-line prediction interface:
 
 ```
 python predict_fraud.py
@@ -141,11 +165,39 @@ The Random Forest model is configured with:
 
 These parameters were chosen to minimize overfitting, even though the main issue turned out to be data leakage rather than traditional overfitting.
 
-## Module Structure
+## Deployment
 
-- `fraud_predictor.py` - Core model training and prediction functionality
-- `predict_fraud.py` - User interface for making predictions
-- `credit_card_fraud_detection.py` - Comprehensive analysis and model comparison
+The project includes configuration files for deployment to:
+- Heroku (Procfile)
+- Railway (railway.json)
+
+To deploy to Railway:
+1. Push your code to a GitHub repository
+2. Connect your repository to Railway
+3. Railway will automatically deploy using the configuration in railway.json
+
+## Project Structure
+
+```
+Credit-Card-fraud-detection/
+├── app.py                        # Streamlit web application
+├── card_transdata_sample.csv     # Sample dataset (1000 records)
+├── create_sample.py              # Script to create sample dataset
+├── credit_card_fraud_detection.py # Main analysis script
+├── fraud_model.pkl               # Trained model file
+├── fraud_predictor.py            # Model training and prediction module
+├── guide.md                      # Presentation guide
+├── model_metrics.csv             # Model performance metrics
+├── predict_fraud.py              # CLI prediction interface
+├── Procfile                      # Heroku deployment configuration
+├── railway.json                  # Railway deployment configuration
+├── README.md                     # Project documentation
+├── requirements.txt              # Python dependencies
+├── runtime.txt                   # Python runtime specification
+├── scaler.pkl                    # Feature scaling model
+├── static/                       # Static assets for web app
+└── .streamlit/                   # Streamlit configuration
+```
 
 ## Learning Outcomes
 
@@ -153,4 +205,20 @@ This project demonstrates:
 1. How to implement machine learning for fraud detection
 2. The importance of thorough feature analysis
 3. How to identify and understand data leakage issues
-4. Building a practical, user-friendly prediction interface
+4. Building practical, user-friendly prediction interfaces (both CLI and web)
+5. Deploying machine learning applications to cloud platforms
+
+## Troubleshooting
+
+- **Model files not found**: Run `python fraud_predictor.py` to generate the model files
+- **Dataset not found**: Ensure the dataset CSV file is in the project directory
+- **Visualization errors**: Make sure all required libraries are installed
+- **Deployment issues**: Check the logs for specific error messages
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
