@@ -1,10 +1,5 @@
 # Credit Card Fraud Detection
-
-![Credit Card Fraud](static/credit_card_fraud.jpg)
-
-## Demo
-
-Demo Video: [Watch Demo](https://drive.google.com/drive/folders/1-NOKIwnEFvgdzenzKa9rIe2ecsyEI3QC)
+Demo Video: [Watch Demo](https://drive.google.com/file/d/1lZ4IcC6M86f20kwWBCAvDLqeP0-Wv0Xa/view?usp=drive_link)
 
 ## Project Overview
 
